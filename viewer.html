@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dorm Vacancy — Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+<header class="v-top">
+  <a class="v-brand" href="viewer.html"><span class="v-brand-mark"><i class="fa-solid fa-building-user"></i></span><span>Dorm Vacancy<span class="v-brand-caption">Live vacancy viewer</span></span></a>
+  <div class="v-top-actions">
+    <button class="v-theme-toggle" type="button" id="vThemeToggle" aria-label="Switch to dark mode" title="Switch to dark mode"><i id="vThemeIcon" class="fa-solid fa-moon"></i></button>
+    <div class="v-user" id="vUser" hidden>
+      <span class="v-user-avatar"><i class="fa-regular fa-user"></i></span>
+      <span id="vUserName"></span>
+      <button type="button" id="vSignOut"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sign out</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="v-main">
+
+  <section class="v-card" id="vConfigWarning" hidden>
+    <h1>Setup needed</h1>
+    <p>Firebase isn't configured yet. Check <code>firebase-config.js</code>.</p>
+  </section>
+
+  <div class="v-auth-shell" id="vAuthShell">
+    <aside class="v-hero">
+      <div class="v-hero-glow"></div>
+      <div class="v-hero-brand"><span class="v-hero-icon"><i class="fa-solid fa-building-user"></i></span><span>ROOMS AT A GLANCE</span></div>
+      <div class="v-hero-copy">
+        <span class="v-live"><i></i> Live availability</span>
+        <h1>Find your next<br><em>open bed.</em></h1>
+        <p>Check room availability in real time. Your private details stay private — viewers only see vacancy counts.</p>
+      </div>
+      <div class="v-hero-foot"><i class="fa-solid fa-shield-halved"></i><span>Secure, read-only access<small>Shared by your dorm administrator</small></span></div>
+      <div class="v-hero-orb orb-one"></div><div class="v-hero-orb orb-two"></div>
+    </aside>
+
+    <section class="v-card" id="vSignIn">
+      <div class="v-step"><span>01</span> YOUR ACCOUNT</div>
+      <h2>Welcome to the viewer</h2>
+      <p>Sign in with Google to continue. You’ll enter your dorm’s private access code next.</p>
+      <button type="button" class="v-btn v-google" id="vGoogleBtn">
+        <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18A11 11 0 0 0 1 12c0 1.78.43 3.45 1.18 4.94l3.66-2.85z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        <span>Continue with Google</span><i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <p class="v-error" id="vSignInError" role="alert" aria-live="polite"></p>
+      <div class="v-card-divider"><span>PRIVATE VACANCY ACCESS</span></div>
+      <div class="v-step-note"><span class="v-step-number">02</span><span><strong>Enter your dorm code</strong><small>Your admin provides the code and password.</small></span></div>
+      <p class="v-foot">Are you the admin or staff? <a href="index.html">Go to admin sign in <i class="fa-solid fa-arrow-up-right-from-square"></i></a></p>
+    </section>
+
+    <section class="v-card" id="vJoin" hidden>
+      <button type="button" class="v-back" id="vBackToSignIn"><i class="fa-solid fa-arrow-left"></i> Account</button>
+      <div class="v-step"><span>02</span> DORM ACCESS</div>
+      <h2>Enter your dorm details</h2>
+      <p>Use the exact code and password shared by your dorm administrator.</p>
+      <label for="vCode">Dorm code</label>
+      <div class="v-input-wrap"><i class="fa-solid fa-hashtag"></i><input type="text" id="vCode" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="30" placeholder="e.g. north-hall"></div>
+      <label for="vPassword">Dorm password</label>
+      <div class="v-input-wrap"><i class="fa-solid fa-lock"></i><input type="password" id="vPassword" autocomplete="off" placeholder="Enter the password"><button class="v-password-toggle" id="vPasswordToggle" type="button" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div>
+      <button type="button" class="v-btn" id="vJoinBtn"><span>View vacancies</span><i class="fa-solid fa-arrow-right"></i></button>
+      <p class="v-error" id="vJoinError" role="alert" aria-live="polite"></p>
+      <p class="v-secure-note"><i class="fa-solid fa-shield-halved"></i> Read-only access. Resident names and personal details are never shown.</p>
+    </section>
+  </div>
+
+  <section class="v-card" id="vMessage" hidden>
+    <h1 id="vMessageTitle">Access ended</h1>
+    <p id="vMessageText"></p>
+    <button type="button" class="v-btn" id="vTryAgainBtn">Enter a dorm code</button>
+  </section>
+
+  <section id="vBoard" hidden>
+    <div class="v-summary" id="vSummary"></div>
+    <div class="v-filters">
+      <select id="vFilterStatus" aria-label="Filter by vacancy">
+        <option value="all">All rooms</option>
+        <option value="vacant">Has vacancy</option>
+        <option value="full">Full</option>
+      </select>
+      <select id="vFilterGender" aria-label="Filter by gender">
+        <option value="all">All genders</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Mixed">Mixed</option>
+      </select>
+    </div>
+    <div class="v-grid" id="vGrid"></div>
+    <p class="v-updated" id="vUpdated"></p>
+  </section>
+
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="js/proof.js"></script>
+<script src="viewer.js"></script>
+</body>
+</html>
