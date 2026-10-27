@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacancy Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ======================= LOGIN SCREEN ======================= -->
+<div id="loginScreen">
+  <div class="auth-shell">
+    <section class="auth-hero" aria-label="Dorm vacancy tracker">
+      <img class="auth-hero-image" src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=1800&q=85" alt="Bright modern dormitory room">
+      <div class="auth-hero-shade"></div>
+      <div class="auth-hero-top">
+        <div class="auth-brand-lockup">
+          <button class="theme-toggle hero-theme-toggle" id="heroThemeToggle" type="button" aria-label="Toggle theme"><i id="heroThemeIcon" class="fa-solid fa-moon"></i></button>
+          <div><span class="brand-eyebrow">TERRINSPROJECT</span><span class="brand-caption">Dorm Vacancy Tracker</span></div>
+        </div>
+        <span class="live-indicator"><i></i> Live System</span>
+      </div>
+      <div class="auth-hero-copy">
+        <span class="hero-kicker"><i class="fa-solid fa-building-user"></i> Automated dormitory management</span>
+        <h1>DORM VACANCY TRACKER</h1>
+        <p>Track occupancy, checkouts, and reservations in one clear view. Keep your team in sync with live updates.</p>
+      </div>
+      <div class="auth-hero-foot">
+        <span class="shield-icon"><i class="fa-solid fa-shield-halved"></i></span>
+        <span><strong>Secure Access Control</strong><small>Instant updates and real-time synchronization</small></span>
+        <span class="version-label">TERRINSPROJECT</span>
+      </div>
+    </section>
+
+    <section class="auth-panel" aria-label="Account sign in">
+      <div class="mobile-brand">
+        <div class="auth-brand-lockup">
+          <button class="theme-toggle mobile-theme-toggle" id="mobileThemeToggle" type="button" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+          <div><span class="brand-eyebrow">TERRINSPROJECT</span><span class="brand-caption">Dorm Vacancy Tracker</span></div>
+        </div>
+      </div>
+      <div class="auth-form-wrap">
+        <div class="auth-tabs" role="tablist" aria-label="Account access mode">
+          <span class="auth-tab-indicator" id="tabIndicator"></span>
+          <button id="loginTabBtn" class="auth-tab active" type="button" role="tab" aria-selected="true">Sign in</button>
+          <button id="signupTabBtn" class="auth-tab" type="button" role="tab" aria-selected="false">Create account</button>
+        </div>
+        <header class="auth-heading">
+          <h2 id="formTitle">Welcome back</h2>
+          <p id="formSubtitle">Sign in to manage dormitory vacancies.</p>
+        </header>
+        <button class="google-auth-btn" id="googleSignInBtn" type="button">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18A11 11 0 0 0 1 12c0 1.78.43 3.45 1.18 4.94l3.66-2.85z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+          <span>Continue with Google</span>
+        </button>
+        <div class="auth-divider"><span>or continue with email</span></div>
+        <div class="auth-name-field" id="nameFieldContainer" hidden>
+          <label for="nameInput">Full name</label>
+          <div class="auth-input-wrap"><i class="fa-regular fa-user"></i><input type="text" id="nameInput" placeholder="Your name" autocomplete="name"></div>
+          <p class="auth-error" id="nameError"></p>
+        </div>
+        <div class="auth-field">
+          <label for="email">Email address</label>
+          <div class="auth-input-wrap"><i class="fa-regular fa-envelope"></i><input type="email" id="email" placeholder="name@example.com" autocomplete="username" aria-label="Email address" required></div>
+          <p class="auth-error" id="emailError"></p>
+        </div>
+        <div class="auth-field">
+          <div class="auth-label-row"><label for="password">Password</label><button type="button" id="forgotPasswordBtn" class="forgot-password">Forgot password?</button></div>
+          <div class="auth-input-wrap"><i class="fa-regular fa-lock"></i><input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" aria-label="Password" required><button class="password-toggle" id="passwordToggle" type="button" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div>
+          <p class="auth-error" id="passwordError"></p>
+        </div>
+        <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
+        <div class="auth-submit-actions">
+          <button class="submit-auth-btn" id="signInBtn" type="button"><span>Sign in</span><i class="fa-solid fa-arrow-right"></i></button>
+          <button class="submit-auth-btn" id="signUpBtn" type="button" hidden><span>Create account</span><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+        <p class="auth-footnote"><span id="footerPrompt">New to the tracker?</span> <button type="button" id="footerActionBtn">Create an account</button></p>
+        <p class="auth-footnote">Only checking vacancies? <a class="viewer-link" href="viewer.html">Open the viewer page</a></p>
+        <div id="configWarning" class="config-warning" style="display:none;">
+          <strong>Setup needed:</strong> Firebase isn't configured yet. Check <code>firebase-config.js</code> and <code>SETUP-GUIDE.md</code>.
+        </div>
+      </div>
+      <footer class="auth-copyright">TERRINSPROJECT <span>© 2026</span> · Dorm Vacancy Tracker</footer>
+    </section>
+  </div>
+</div>
+
+<!-- ======================= APP SHELL ======================= -->
+<div id="app">
+  <header class="topbar">
+    <div class="brand-mark"><span class="dot"></span>Vacancy Tracker</div>
+    <div class="topbar-right">
+      <div class="clock"><div class="time" id="clockTime">--:--:--</div><div class="date" id="clockDate">—</div></div>
+      <div class="user-chip"><img id="userPhoto" alt=""><span class="name" id="userName"></span></div>
+      <button class="theme-toggle app-theme-toggle" id="appThemeToggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode"><i id="appThemeIcon" class="fa-solid fa-moon"></i></button>
+      <button class="signout" id="signOutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="hallway">Hallway Layout</button>
+    <button data-tab="analytics">Analytics</button>
+    <button data-tab="matrix">Matrix</button>
+    <button data-tab="calendar">Checkout Calendar</button>
+    <button data-tab="reserve">Reserve Clients</button>
+    <button data-tab="temporary">Temporary Dorm Clients</button>
+    <button data-tab="history">Tenant History</button>
+    <button data-tab="viewers">Viewer Access</button>
+  </nav>
+
+  <main>
+
+    <!-- ---------------- DASHBOARD ---------------- -->
+    <section class="view active" id="view-dashboard">
+      <h2 class="view-title">Room &amp; Bed Dashboard</h2>
+      <p class="view-sub">Live vacancy by room, tenant and checkout schedule.</p>
+      <div class="stat-strip" id="statStrip"></div>
+      <div class="overdue-panel" id="overduePanel" hidden></div>
+      <div class="toolbar">
+        <div class="filters">
+          <select id="filterGender">
+            <option value="all">All genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Mixed">Mixed</option>
+          </select>
+          <select id="filterVacancy">
+            <option value="all">All rooms</option>
+            <option value="vacant">Has vacancy</option>
+            <option value="full">Full</option>
+          </select>
+          <select id="filterDemographic">
+            <option value="all">All resident groups</option>
+            <option value="Students">Students</option>
+            <option value="Reviewees">Reviewees</option>
+            <option value="Mixed">Mixed / unassigned</option>
+          </select>
+          <input type="text" id="filterSearch" placeholder="Search room or tenant...">
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline" id="importSeedBtn">Import my existing rooms</button>
+          <button class="btn btn-primary" id="addRoomBtn">+ Add room</button>
+        </div>
+      </div>
+      <div class="legend operational-legend">
+        <span><i class="vacant"></i>Vacant</span><span><i class="occupied"></i>Occupied</span>
+        <span><i class="reserved"></i>Reserved</span><span><i class="temporary"></i>Temporary</span>
+        <span><i class="overdue"></i>Overdue</span><span><i class="soon"></i>Checkout ≤48h</span>
+      </div>
+      <div class="room-grid" id="roomGrid"></div>
+    </section>
+
+    <!-- ---------------- HALLWAY ---------------- -->
+    <section class="view" id="view-hallway">
+      <h2 class="view-title">Hallway Layout</h2>
+      <p class="view-sub">Layout starts locked to prevent accidental changes. Unlock to reposition rooms and shapes.</p>
+      <div class="toolbar">
+        <div class="hallway-actions">
+          <button class="btn btn-outline" id="layoutLockBtn" type="button" aria-pressed="true"><i class="fa-solid fa-lock"></i> Layout locked</button>
+          <button class="btn btn-outline" id="addShapeBtn" type="button">+ Add Facility / Shape</button>
+          <button class="btn btn-outline" id="editShapeBtn" type="button" hidden>Edit selected shape</button>
+          <button class="btn btn-primary" id="addRoomBtn2" type="button">+ Add room</button>
+        </div>
+      </div>
+      <div class="hallway-wrap">
+        <div class="hallway-canvas" id="hallwayCanvas"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- ANALYTICS ---------------- -->
+    <section class="view" id="view-analytics">
+      <h2 class="view-title">Analytics</h2>
+      <p class="view-sub">Occupancy, upcoming turnover and vacancy hotspots.</p>
+      <div class="stat-strip" id="analyticsTop"></div>
+      <div class="analytics-grid">
+        <div class="panel"><h4>Vacant beds by room</h4><div id="vacancyBars"></div></div>
+        <div class="panel">
+          <h4>Beds by gender assignment</h4><div id="genderBars"></div>
+          <h4 style="margin-top:20px;">Beds by resident group</h4><div id="demographicBars"></div>
+          <h4 style="margin-top:20px;">Upcoming checkout load</h4><div id="checkoutWindowBars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- MATRIX ---------------- -->
+    <section class="view" id="view-matrix">
+      <h2 class="view-title">Occupancy Matrix</h2>
+      <p class="view-sub">Every room and bed at a glance. Hover a cell for details.</p>
+      <div class="matrix-scroll">
+        <div class="legend">
+          <span><i class="vacant"></i>Vacant</span>
+          <span><i class="occupied"></i>Occupied</span>
+          <span><i class="reserved"></i>Reserved</span>
+          <span><i class="temporary"></i>Temporary</span>
+          <span><i class="overdue"></i>Overdue</span>
+          <span><i class="soon"></i>Checkout ≤48h</span>
+        </div>
+        <table class="matrix" id="matrixTable"></table>
+      </div>
+    </section>
+
+    <!-- ---------------- CHECKOUT CALENDAR ---------------- -->
+    <section class="view" id="view-calendar">
+      <h2 class="view-title">Checkout Calendar</h2>
+      <p class="view-sub">Browse any month, forward or back — every room and tenant checking out that month.</p>
+      <div class="cal-nav">
+        <button id="calPrev">‹</button>
+        <div class="cal-title" id="calTitle">—</div>
+        <button id="calNext">›</button>
+        <button class="today-btn" id="calTodayBtn">Today</button>
+      </div>
+      <div class="checkout-list" id="checkoutList"></div>
+    </section>
+
+    <!-- ---------------- RESERVE CLIENTS ---------------- -->
+    <section class="view" id="view-reserve">
+      <h2 class="view-title">Reserve Clients</h2>
+      <p class="view-sub">Track incoming clients and reserve eligible beds. A reservation remains locked until check-in and transitions automatically when its check-in time arrives.</p>
+      <div class="reserve-grid">
+        <div class="prospect-form">
+          <div class="field"><label>Client name</label><input type="text" id="pName" placeholder="Full name"></div>
+          <div class="field"><label>Gender</label>
+            <select id="pGender"><option>Male</option><option>Female</option><option value="Any">Any</option></select>
+          </div>
+          <div class="field"><label>Resident group</label><select id="pDemographic"><option value="Student">Student</option><option value="Reviewee">Reviewee</option></select></div>
+          <div class="field-row">
+            <div class="field"><label>Target check-in</label><input type="datetime-local" id="pCheckIn"></div>
+            <div class="field"><label>Target check-out (optional)</label><input type="datetime-local" id="pCheckOut"></div>
+          </div>
+          <div class="field"><label>Preferred room / bed (optional)</label><select id="pDesiredBed"></select></div>
+          <div class="field"><label>Notes</label><textarea id="pNotes" rows="2" placeholder="Optional"></textarea></div>
+          <button class="btn btn-primary" id="addProspectBtn">Add reserve client</button>
+        </div>
+        <div class="prospect-list" id="prospectList"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- TEMPORARY CLIENTS ---------------- -->
+    <section class="view" id="view-temporary">
+      <h2 class="view-title">Temporary Dorm Clients</h2>
+      <p class="view-sub">Register short-term guests and assign a compatible vacant bed. Assigned beds are marked temporary and unavailable to other workflows.</p>
+      <div class="reserve-grid">
+        <div class="prospect-form">
+          <div class="field"><label for="tName">Client name</label><input type="text" id="tName" placeholder="Full name"></div>
+          <div class="field"><label for="tGender">Gender</label><select id="tGender"><option>Male</option><option>Female</option><option>Mixed</option></select></div>
+          <div class="field-row">
+            <div class="field"><label for="tStart">Check-in</label><input type="datetime-local" id="tStart"></div>
+            <div class="field"><label for="tEnd">Check-out</label><input type="datetime-local" id="tEnd"></div>
+          </div>
+          <div class="field"><label for="tTargetBed">Vacant bed</label><select id="tTargetBed"></select></div>
+          <div class="field"><label for="tNotes">Notes</label><textarea id="tNotes" rows="2" placeholder="Optional"></textarea></div>
+          <button class="btn btn-primary" id="addTemporaryBtn" type="button">Add temporary client</button>
+        </div>
+        <div class="prospect-list" id="temporaryList"></div>
+      </div>
+    </section>
+
+    <!-- ---------------- TENANT HISTORY ---------------- -->
+    <section class="view" id="view-history">
+      <h2 class="view-title">Tenant History</h2>
+      <p class="view-sub">Tenants who checked out or were replaced. Each record is deleted automatically after 30 days.</p>
+      <div id="historyList"></div>
+    </section>
+
+    <!-- ---------------- VIEWER ACCESS ---------------- -->
+    <section class="view" id="view-viewers">
+      <h2 class="view-title">Viewer Access</h2>
+      <p class="view-sub">Let people check which rooms are vacant or full without seeing any resident names. You control who gets in.</p>
+      <div id="viewerAccessPanel"></div>
+    </section>
+
+  </main>
+
+  <aside class="assistant-widget" aria-label="Dorm assistant">
+    <section class="assistant-panel" id="assistantPanel" aria-labelledby="assistantTitle" hidden>
+      <header class="assistant-header">
+        <div class="assistant-avatar" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></div>
+        <div class="assistant-heading">
+          <h2 id="assistantTitle">Dorm Assistant</h2>
+          <span>Tracker help</span>
+        </div>
+        <button class="assistant-close" id="assistantCloseBtn" type="button" aria-label="Close assistant">&times;</button>
+      </header>
+      <div class="assistant-messages" id="assistantMessages" aria-live="polite" aria-relevant="additions">
+        <div class="assistant-message">
+          <span class="assistant-message-avatar" aria-hidden="true"><i class="fa-solid fa-sparkles"></i></span>
+          <p>How can I assist you?</p>
+        </div>
+        <p class="assistant-notice" id="assistantStatus">Deploy the Python tracker assistant to enable chat.</p>
+      </div>
+      <p class="assistant-provider-note">Built with tracker-specific Python rules. No AI model API key is needed. Changes require your confirmation.</p>
+      <form class="assistant-compose" id="assistantForm">
+        <input type="text" id="assistantInput" aria-label="Message" placeholder="Ask about your vacancy tracker…" autocomplete="off" required>
+        <button type="submit" id="assistantSendBtn" aria-label="Send message"><i class="fa-solid fa-arrow-up"></i></button>
+      </form>
+    </section>
+    <p class="assistant-greeting" id="assistantGreeting">How can I assist you?</p>
+    <button class="assistant-launcher" id="assistantLauncher" type="button" aria-label="Open dorm assistant" aria-expanded="false" aria-controls="assistantPanel">
+      <i class="fa-solid fa-sparkles" aria-hidden="true"></i>
+    </button>
+  </aside>
+</div>
+
+<!-- ---------------- ROOM MODAL ---------------- -->
+<div class="modal-backdrop" id="roomModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3 id="roomModalTitle">Add room</h3><button class="icon-btn" id="closeRoomModal">✕</button></div>
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field"><label>Room number / name</label><input type="text" id="rmRoomNumber" placeholder="e.g. 220"></div>
+        <div class="field"><label>Type</label>
+          <select id="rmType"><option>Room</option><option>Bedspacer</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Gender assignment</label>
+        <select id="rmGender"><option>Mixed</option><option>Male</option><option>Female</option></select>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="rmDemographic">Resident group zoning</label>
+          <select id="rmDemographic"><option value="Mixed">Mixed / unassigned</option><option value="Students">Students</option><option value="Reviewees">Reviewees</option></select>
+        </div>
+        <div class="field"><label for="rmTenancyMode">Tenancy mode</label>
+          <select id="rmTenancyMode"><option value="Bedspace">Bedspace</option><option value="Whole Room">Whole Room</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Capacity (number of beds)</label>
+        <div class="chip-select" id="capacityChips"></div>
+        <input type="hidden" id="rmCapacity">
+      </div>
+      <div class="field">
+        <label>Beds</label>
+        <div class="beds-editor" id="bedsEditor"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelRoomModal">Cancel</button>
+      <button class="btn btn-primary" id="saveRoomBtn">Save room</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="transferModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3>Transfer resident</h3><button class="icon-btn" id="closeTransferModal" type="button" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <p class="view-sub" id="transferSourceSummary"></p>
+      <div class="field"><label for="transferTarget">Compatible vacant bed</label><select id="transferTarget"></select></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelTransferModal" type="button">Cancel</button>
+      <button class="btn btn-primary" id="confirmTransferBtn" type="button">Transfer resident</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- EXTEND STAY MODAL ---------------- -->
+<div class="modal-backdrop" id="extendModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3>Extend stay</h3><button class="icon-btn" id="closeExtendModal" type="button" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <p class="view-sub" id="extendSummary"></p>
+      <div class="field"><label for="extendNewEnd">New checkout date and time</label><input type="datetime-local" id="extendNewEnd"></div>
+      <div class="notice-box" id="extendReservationBox" hidden>
+        <p id="extendReservationText"></p>
+        <label class="check-row"><input type="checkbox" id="extendCancelReservation"> Cancel that reservation so this tenant can stay</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelExtendModal" type="button">Close</button>
+      <button class="btn btn-primary" id="saveExtendBtn" type="button">Save new checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---------------- FACILITY / SHAPE MODAL ---------------- -->
+<div class="modal-backdrop" id="shapeModalBackdrop">
+  <div class="modal">
+    <div class="modal-head"><h3 id="shapeModalTitle">Add Facility / Shape</h3><button class="icon-btn" id="closeShapeModal" type="button" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label for="shapeLabel">Label</label><input type="text" id="shapeLabel" maxlength="80" placeholder="e.g. CR Male, Admin Office, Lobby"></div>
+    <div class="field"><label for="shapeLabelRotation">Label position</label>
+      <select id="shapeLabelRotation">
+        <option value="0">0°</option>
+        <option value="90">90°</option>
+        <option value="180">180°</option>
+        <option value="270">270°</option>
+      </select>
+    </div>
+      <div class="field-row">
+        <div class="field"><label for="shapeKind">Type</label>
+          <select id="shapeKind"><option value="facility">Facility / room</option><option value="walkway">Corridor / walkway</option></select>
+        </div>
+        <div class="field"><label for="shapeGeometry">Geometry</label>
+          <select id="shapeGeometry"><option value="rectangle">Rectangle / square</option><option value="circle">Circle</option><option value="triangle">Triangle</option></select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="shapeColor">Background color</label><input type="color" id="shapeColor" value="#dce8e4">
+      </div>
+      <p class="view-sub shape-editor-hint">Resize directly on the hallway canvas using the handles.</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="deleteShapeBtn" type="button" hidden>Delete shape</button>
+      <span class="spacer"></span>
+      <button class="btn btn-outline" id="cancelShapeModal" type="button">Cancel</button>
+      <button class="btn btn-primary" id="saveShapeBtn" type="button">Save shape</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (Google Sign-In + Firestore database) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="seed-data.js"></script>
+<script src="assistant.js"></script>
+<script src="js/proof.js"></script>
+<script src="js/01-state.js"></script>
+<script src="js/02-auth-boot.js"></script>
+<script src="js/03-clock-and-sync.js"></script>
+<script src="js/04-helpers.js"></script>
+<script src="js/05-dashboard.js"></script>
+<script src="js/06-rooms.js"></script>
+<script src="js/07-transfers.js"></script>
+<script src="js/08-temporary-clients.js"></script>
+<script src="js/09-hallway.js"></script>
+<script src="js/10-analytics-calendar.js"></script>
+<script src="js/11-reservations.js"></script>
+<script src="js/12-overdue-history.js"></script>
+<script src="js/13-viewer-access.js"></script>
+<script src="js/99-main.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+    function dormPath(code) {
+      return /databases/$(database)/documents/dorms/$(code);
+    }
+    function isDormOwner(code) {
+      return signedIn() && get(dormPath(code)).data.ownerUid == request.auth.uid;
+    }
+    function isDormViewer(code) {
+      return signedIn() && exists(/databases/$(database)/documents/dorms/$(code)/viewers/$(request.auth.uid));
+    }
+
+    // Admin data: every account can only touch its own records (unchanged).
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ---- Viewer access -------------------------------------------------
+
+    // Dorm settings. Only the owner can read or change them.
+    match /dorms/{code} {
+      allow read: if isDormOwner(code);
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'enabled', 'updatedAt']);
+      allow update: if isDormOwner(code)
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.keys().hasOnly(['ownerUid', 'dormName', 'enabled', 'updatedAt']);
+      allow delete: if isDormOwner(code);
+
+      // Name-free vacancy list. The owner writes it; joined viewers read it
+      // while access is switched on.
+      match /vacancy/{roomId} {
+        allow read: if isDormOwner(code)
+          || (isDormViewer(code) && get(dormPath(code)).data.enabled == true);
+        allow write: if isDormOwner(code);
+      }
+
+      // People who joined. A viewer may create ONLY their own record, and only
+      // with the right password fingerprint, while access is on and they are
+      // not blocked.
+      match /viewers/{viewerId} {
+        allow get: if signedIn() && (request.auth.uid == viewerId || isDormOwner(code));
+        allow list: if isDormOwner(code);
+        allow create: if signedIn()
+          && request.auth.uid == viewerId
+          && get(dormPath(code)).data.enabled == true
+          && !exists(/databases/$(database)/documents/dorms/$(code)/blocked/$(request.auth.uid))
+          && request.resource.data.proof == get(/databases/$(database)/documents/dormSecrets/$(code)).data.passwordHash
+          && request.resource.data.keys().hasOnly(['proof', 'name', 'email', 'joinedAt'])
+          && request.resource.data.joinedAt == request.time;
+        allow delete: if isDormOwner(code) || (signedIn() && request.auth.uid == viewerId);
+      }
+
+      // Viewers the admin removed.
+      match /blocked/{blockedId} {
+        allow read, write: if isDormOwner(code);
+      }
+    }
+
+    // Password fingerprint. Never readable by viewers; only the owner.
+    match /dormSecrets/{code} {
+      allow read, write: if isDormOwner(code);
+    }
+  }
+}

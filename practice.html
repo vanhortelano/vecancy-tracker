@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Auth in HTML5</title>
+</head>
+<body>
+
+  <h2>Simple Firebase Auth</h2>
+  
+  <input type="email" id="email" placeholder="Email"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+  
+  <button id="signUpBtn">Sign Up</button>
+  <button id="signInBtn">Sign In</button>
+
+  <!-- Load Firebase via standard HTML5 ES Modules -->
+  <script type="module">
+    // Import Firebase modules directly from the Google CDN
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+
+    // Your project "practice" configuration
+    const firebaseConfig = {
+    apiKey: "AIzaSyDNWRhO1PqQRu8LGk69x_uF4oyYIj5Q-fU",
+    authDomain: "practice-3641b.firebaseapp.com",
+    projectId: "practice-3641b",
+    storageBucket: "practice-3641b.firebasestorage.app",
+    messagingSenderId: "128061201179",
+    appId: "1:128061201179:web:956e64933b62c4516b11be",
+    measurementId: "G-2FKL01M58Z"
+  };
+
+    // Initialize Firebase and Auth
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Sign Up Logic
+    document.getElementById("signUpBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Account created successfully! " + userCredential.user.email);
+        })
+        .catch((error) => {
+          alert("Error signing up: " + error.message);
+        });
+    });
+
+    // Sign In Logic
+    document.getElementById("signInBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Welcome back! " + userCredential.user.email);
+        })
+        .catch((error) => {
+          alert("Error signing in: " + error.message);
+        });
+    });
+  </script>
+</body>
+</html>
+>
