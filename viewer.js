@@ -3,13 +3,43 @@
 (function(){
   const $ = id => document.getElementById(id);
   const SECTIONS = ["vConfigWarning","vSignIn","vJoin","vMessage","vBoard"];
-  function show(name){ SECTIONS.forEach(id=>{ $(id).hidden = id !== name; }); }
+  function show(name){
+    SECTIONS.forEach(id=>{ $(id).hidden = id !== name; });
+    $("vAuthShell").hidden = name !== "vSignIn" && name !== "vJoin";
+  }
+  function applyTheme(dark){
+    document.body.classList.toggle("v-dark", dark);
+    const label = dark ? "Switch to light mode" : "Switch to dark mode";
+    $("vThemeToggle").setAttribute("aria-label", label);
+    $("vThemeToggle").title = label;
+    $("vThemeIcon").className = dark ? "fa-solid fa-sun" : "fa-solid fa-moon";
+  }
+  try{ applyTheme(localStorage.getItem("loginTheme") === "dark"); }
+  catch(error){ applyTheme(false); }
+  $("vThemeToggle").addEventListener("click", ()=>{
+    const dark = !document.body.classList.contains("v-dark");
+    applyTheme(dark);
+    try{ localStorage.setItem("loginTheme", dark ? "dark" : "light"); }
+    catch(error){ console.error("Could not save viewer theme", error); }
+  });
+  $("vPasswordToggle").addEventListener("click", ()=>{
+    const input = $("vPassword");
+    const visible = input.type === "password";
+    input.type = visible ? "text" : "password";
+    $("vPasswordToggle").setAttribute("aria-label", visible ? "Hide password" : "Show password");
+    $("vPasswordToggle").innerHTML = `<i class="fa-regular ${visible ? "fa-eye-slash" : "fa-eye"}"></i>`;
+  });
 
   const cfg = window.FIREBASE_CONFIG;
   if (!cfg || cfg.apiKey === "YOUR_API_KEY"){ show("vConfigWarning"); return; }
   firebase.initializeApp(cfg);
   const auth = firebase.auth();
   const db = firebase.firestore();
+  if (location.protocol !== "file:"){
+    auth.getRedirectResult().catch(error=>{
+      $("vSignInError").textContent = "Google sign-in failed: " + authErrorMessage(error);
+    });
+  }
 
   let unsubViewerDoc = null, unsubVacancy = null;
   let vacancyRooms = [];
@@ -42,16 +72,24 @@
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider).catch(err=>{
       if (err.code === "auth/popup-blocked" || err.code === "auth/operation-not-supported-in-this-environment"){
-        return auth.signInWithRedirect(provider);
+        return auth.signInWithRedirect(provider).catch(redirectError=>{
+          $("vSignInError").textContent = "Google sign-in failed: " + authErrorMessage(redirectError);
+        });
       }
       if (err.code === "auth/popup-closed-by-user" || err.code === "auth/cancelled-popup-request") return;
-      $("vSignInError").textContent = "Google sign-in failed: " + err.message;
+      $("vSignInError").textContent = "Google sign-in failed: " + authErrorMessage(err);
     });
   });
   $("vSignOut").addEventListener("click", ()=>auth.signOut());
+  $("vBackToSignIn").addEventListener("click", ()=>auth.signOut());
   $("vTryAgainBtn").addEventListener("click", ()=>{
     $("vJoinError").textContent = "";
     show("vJoin");
+  });
+  ["vCode","vPassword"].forEach(id=>{
+    $(id).addEventListener("keydown", event=>{
+      if (event.key === "Enter") $("vJoinBtn").click();
+    });
   });
 
   auth.onAuthStateChanged(async user=>{
@@ -84,17 +122,22 @@
     const code = normalizeDormCode($("vCode").value);
     const password = $("vPassword").value;
     if (!isValidDormCode(code) || !password){
-      error.textContent = "Enter the dorm code and the password.";
+      error.textContent = !code || !password
+        ? "Enter the dorm code and password."
+        : "Dorm codes must be 4–30 characters using letters, numbers, and dashes.";
       return;
     }
     const button = $("vJoinBtn");
     button.disabled = true;
     try{
       const viewerRef = db.collection("dorms").doc(code).collection("viewers").doc(user.uid);
-      let existing = null;
-      try{ existing = await viewerRef.get(); }catch(e){ existing = null; }
+      const proof = await viewerProof(code, password);
+      const existing = await viewerRef.get();
+      if (existing.exists && existing.data().proof !== proof){
+        error.textContent = "That dorm code and password do not match. Check them with your administrator.";
+        return;
+      }
       if (!existing || !existing.exists){
-        const proof = await viewerProof(code, password);
         await viewerRef.set({
           proof,
           name: user.displayName || "",
@@ -108,7 +151,7 @@
     }catch(err){
       console.error("Join failed", err);
       error.textContent = err.code === "permission-denied"
-        ? "That didn't work. Check the dorm code and password, or ask your admin — access may be turned off or removed."
+        ? "Could not join with those details. Check the code and password, or ask your admin if viewer access is enabled."
         : "Could not join: " + err.message;
     }finally{
       button.disabled = false;
@@ -157,6 +200,17 @@
 
   function esc(value){
     return String(value==null?"":value).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+
+  function authErrorMessage(error){
+    const messages = {
+      "auth/operation-not-allowed":"Google sign-in is disabled. Ask the administrator to enable Google in Firebase Authentication.",
+      "auth/unauthorized-domain":"This site domain is not authorized in Firebase Authentication settings.",
+      "auth/popup-blocked":"The sign-in popup was blocked. Allow popups for this site and try again.",
+      "auth/operation-not-supported-in-this-environment":"Open the viewer through HTTPS or localhost to use Google sign-in.",
+      "auth/network-request-failed":"Network error. Check your connection and try again."
+    };
+    return messages[error.code] || error.message || "Please try again.";
   }
 
   $("vFilterStatus").addEventListener("change", renderBoard);
